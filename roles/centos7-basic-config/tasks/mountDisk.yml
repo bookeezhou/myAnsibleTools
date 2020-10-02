@@ -1,0 +1,64 @@
+---
+
+- name: 创建挂载目录
+  file: 
+    path: "{{ item.mountDirectory }}"
+    state: directory
+    mode: 0644
+  with_items: "{{ disks }}"
+  register: printInfo
+  tags: mountDisk
+
+- name: 调式
+  debug: 
+    msg： "{{ printInfo }}"
+  tags: mountDisk
+
+- name: umount 原目录
+  mount: 
+    path: "{{ item.mountDirectory }}"
+    state: absent
+  with_items: "{{ disks }}"
+  tags: mountDisk
+
+- name: 创建分区
+  parted: 
+    device: "{{ item.device }}"
+    number: "{{ item.number }}"
+    state: present
+    part_start: "{{ item.start }}"
+    part_end: "{{ item.end }}"
+    # unit: '%'
+  with_items: "{{ disks }}"
+  tags: 
+    - mountDisk
+    - createPartition
+
+# - name: 创建分区
+#   parted: 
+#     device: /dev/sdb
+#     number: 1
+#     state: absent
+#   tags: 
+#     - mountDisk
+#     - createPartition
+
+- name: 格式化磁盘
+  filesystem: 
+    fstype: ext4
+    dev: "{{ item.fullDiskPath }}"
+    force: true
+  with_items: "{{ disks }}"
+  tags: 
+    - mountDisk
+
+- name: 挂载磁盘
+  mount: 
+    path: "{{ item.mountDirectory }}"
+    src: "{{item.fullDiskPath }}"
+    fstype: ext4
+    opts: "defaults"
+    state: mounted
+  with_items: "{{ disks }}"
+  tags: 
+    - mountDisk

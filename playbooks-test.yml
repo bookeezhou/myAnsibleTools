@@ -1,0 +1,11 @@
+---
+
+- name: centos7 基础配置
+  hosts: huawei-disk
+#   connection: local
+  remote_user: root
+#   become: yes
+#   become_user: mysql
+  any_errors_fatal: true
+  roles:
+    - centos7-basic-config

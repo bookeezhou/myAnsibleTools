@@ -1,0 +1,10 @@
+---
+# vars file for centos-7-basic-config
+
+disks: 
+  - device: /dev/sdb
+    fullDiskPath: /dev/sdb1
+    mountDirectory: /data
+    number: 1
+    start: 0%
+    end: 100%

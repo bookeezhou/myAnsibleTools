@@ -1,0 +1,10 @@
+---
+# tasks file for centos-7-basic-config
+- name: ssh-config(centos 7)
+  include_tasks: ssh-config.yml
+
+- name: 挂载磁盘
+  include_tasks: mountDisk.yml
+  tags: 
+    - mountDisk
+    - createPartition

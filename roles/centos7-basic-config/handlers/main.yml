@@ -1,0 +1,7 @@
+---
+# handlers file for centos-7-basic-config
+
+# 重启sshd
+
+- name: sshd restart
+  systemd: name=sshd state=restarted enabled=yes

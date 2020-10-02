@@ -1,0 +1,23 @@
+---
+- name: sshd服务禁用dns,加快ssh客户端连接
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    backrefs: yes
+    regexp: ^#UseDNS yes$
+    line: UseDNS no
+    state: present
+  notify:
+    - sshd restart
+
+- name: sshd服务设置发送心跳时间
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    backrefs: yes
+    regexp: ^#ClientAliveInterval 0$
+    line: ClientAliveInterval 60
+    state: present
+  notify:
+    - sshd restart
+
+- name: 设置客户端首次ssh连接验证，要求输入 yes
+  shell: echo 'StrictHostkeyChecking no' > /root/.ssh/config
